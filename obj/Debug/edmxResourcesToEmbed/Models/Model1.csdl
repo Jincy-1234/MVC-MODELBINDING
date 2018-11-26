@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="ContactsManagModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="ContactGroup">
+    <Key>
+      <PropertyRef Name="GroupId" />
+    </Key>
+    <Property Name="GroupId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="GroupName" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+    <NavigationProperty Name="Contacts" Relationship="Self.FK_Contacts_ContactGroups" FromRole="ContactGroups" ToRole="Contacts" />
+  </EntityType>
+  <EntityType Name="Contact">
+    <Key>
+      <PropertyRef Name="ContactId" />
+    </Key>
+    <Property Name="ContactId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="GroupId" Type="Int32" />
+    <Property Name="ContactName" Type="String" MaxLength="40" FixedLength="true" Unicode="true" />
+    <Property Name="Location" Type="String" MaxLength="40" FixedLength="true" Unicode="true" />
+    <NavigationProperty Name="ContactGroup" Relationship="Self.FK_Contacts_ContactGroups" FromRole="Contacts" ToRole="ContactGroups" />
+  </EntityType>
+  <Association Name="FK_Contacts_ContactGroups">
+    <End Role="ContactGroups" Type="Self.ContactGroup" Multiplicity="0..1" />
+    <End Role="Contacts" Type="Self.Contact" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ContactGroups">
+        <PropertyRef Name="GroupId" />
+      </Principal>
+      <Dependent Role="Contacts">
+        <PropertyRef Name="GroupId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="ContactsManagEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="ContactGroups" EntityType="Self.ContactGroup" />
+    <EntitySet Name="Contacts" EntityType="Self.Contact" />
+    <AssociationSet Name="FK_Contacts_ContactGroups" Association="Self.FK_Contacts_ContactGroups">
+      <End Role="ContactGroups" EntitySet="ContactGroups" />
+      <End Role="Contacts" EntitySet="Contacts" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
